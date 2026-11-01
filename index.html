@@ -1,138 +1,761 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>VYRA — Legends Arena</title>
+
 <style>
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#06101b;color:#fff;font-family:Inter,Arial,sans-serif}
-canvas{display:block}.hidden{display:none!important}
-#menu{position:fixed;inset:0;z-index:20;display:grid;place-items:center;background:radial-gradient(circle at 50% 35%,#1d4b75,#06101b 62%)}
-.card{width:min(430px,92vw);padding:28px;border:1px solid #4c83b7;border-radius:24px;background:rgba(5,12,22,.9);box-shadow:0 20px 80px #0008;text-align:center}
-h1{font-size:42px;margin:0 0 4px;letter-spacing:4px} .sub{opacity:.7;margin-bottom:22px}
-input{width:100%;padding:14px;margin:6px 0;border-radius:12px;border:1px solid #3b5b79;background:#091522;color:#fff;font-size:16px}
-button{border:0;color:#fff;font-weight:800;cursor:pointer}
-#join{width:100%;padding:14px;border-radius:12px;margin-top:10px;background:linear-gradient(135deg,#3b82f6,#7c3aed)}
-#status{min-height:20px;color:#9fd0ff}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#06101b;color:white;font-family:Arial,sans-serif}
+canvas{display:block}
+.hidden{display:none!important}
+button{color:white;border:0;font-weight:900;cursor:pointer;touch-action:manipulation}
+#menu{position:fixed;inset:0;z-index:20;display:grid;place-items:center;background:radial-gradient(circle at center,#205b91,#06101b 70%)}
+.card{width:min(430px,92vw);padding:28px;border:1px solid #4c83b7;border-radius:24px;background:#071321ed;text-align:center;box-shadow:0 20px 80px #0009}
+h1{font-size:48px;letter-spacing:6px;margin:0}
+.sub{opacity:.7;margin:5px 0 24px}
+input{width:100%;padding:14px;margin:6px 0;border-radius:12px;border:1px solid #45617c;background:#091522;color:white;font-size:16px}
+#join{width:100%;padding:15px;border-radius:12px;margin-top:12px;background:linear-gradient(120deg,#238bff,#773dff)}
+#status{min-height:25px;color:#9fd0ff;margin-top:12px;font-size:13px}
 #hud{position:fixed;inset:0;z-index:5;pointer-events:none}
-#top{position:absolute;top:12px;left:50%;transform:translateX(-50%);padding:9px 18px;border-radius:20px;background:#050b14cc;border:1px solid #ffffff22;text-align:center;white-space:nowrap}
-#team{font-weight:900}.tiny{font-size:12px;opacity:.75}
-#shop{position:absolute;right:14px;top:14px;width:250px;pointer-events:auto;background:#06101ddd;border:1px solid #ffffff22;border-radius:16px;padding:12px;backdrop-filter:blur(8px)}
-.item{padding:10px;margin:6px 0;border-radius:10px;background:#102033;border:1px solid #29445f;cursor:pointer}
-.item:hover{background:#16304c}.item b{display:block}.price{color:#ffd166}
-#inventory{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);display:flex;gap:7px;pointer-events:auto}
-.slot{width:62px;height:54px;border-radius:10px;background:#07121fdd;border:1px solid #45617b;display:grid;place-items:center;text-align:center;font-size:10px}
-#joystick{position:absolute;left:24px;bottom:28px;width:128px;height:128px;border-radius:50%;background:#ffffff10;border:2px solid #ffffff22;pointer-events:auto}
-#stick{position:absolute;left:35px;top:35px;width:54px;height:54px;border-radius:50%;background:#4f8cffaa}
-#buttons{position:absolute;right:24px;bottom:24px;display:flex;gap:10px;pointer-events:auto}
-.skill{width:64px;height:64px;border-radius:50%;background:#142941;border:2px solid #6da4ff;box-shadow:0 5px 20px #0008}
-#attack{background:#6b2028;border-color:#ff7780}
-#score{position:absolute;left:14px;top:14px;background:#06101ddd;border:1px solid #ffffff22;border-radius:12px;padding:10px;font-size:12px}
-@media(max-width:700px){#shop{width:190px;font-size:11px}.skill{width:56px;height:56px}.tiny{font-size:10px}}
+#top{position:absolute;top:12px;left:50%;transform:translateX(-50%);padding:9px 18px;border-radius:20px;background:#050b14dd;border:1px solid #ffffff33;text-align:center;white-space:nowrap}
+#stats{font-size:12px;opacity:.8;margin-top:4px}
+#score{position:absolute;left:12px;top:12px;padding:11px;background:#06101ddd;border:1px solid #ffffff33;border-radius:12px;font-size:12px;line-height:1.7;max-width:180px}
+#shop{position:absolute;right:12px;top:12px;width:220px;padding:12px;background:#06101ded;border:1px solid #ffffff33;border-radius:15px;pointer-events:auto;max-height:55vh;overflow:auto}
+.item{padding:10px;margin:7px 0;border-radius:10px;background:#142b43;border:1px solid #355675;cursor:pointer;font-size:12px}
+.item:active{background:#28517a}
+.item b{display:block;font-size:13px;margin-bottom:4px}
+.price{color:#ffd166}
+#shopToggle{display:none;position:absolute;right:12px;top:12px;padding:12px;border-radius:12px;background:#174a80;pointer-events:auto}
+#inventory{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);display:flex;gap:6px;pointer-events:auto}
+.slot{width:65px;height:53px;border-radius:9px;background:#07121fee;border:1px solid #6485a5;display:grid;place-items:center;text-align:center;font-size:10px;cursor:pointer;padding:3px}
+#joystick{position:absolute;left:22px;bottom:25px;width:125px;height:125px;border-radius:50%;background:#ffffff12;border:2px solid #ffffff33;pointer-events:auto;touch-action:none}
+#stick{position:absolute;left:34px;top:34px;width:54px;height:54px;border-radius:50%;background:#4f8cffcc;pointer-events:none}
+#buttons{position:absolute;right:18px;bottom:22px;display:flex;gap:8px;pointer-events:auto}
+.skill{width:62px;height:62px;border-radius:50%;background:#183755;border:2px solid #77adff;box-shadow:0 4px 15px #0009;font-size:12px}
+.skill:active{transform:scale(.91);background:#3976bc}
+#attack{background:#762630;border-color:#ff8790;width:70px;height:70px}
+#message{position:absolute;left:50%;top:75px;transform:translateX(-50%);padding:9px 15px;background:#06101ddd;border-radius:12px;color:#c6e6ff;font-size:12px;white-space:nowrap}
+#leave{position:absolute;left:12px;bottom:12px;pointer-events:auto;background:#782d36;padding:9px 13px;border-radius:9px;font-size:11px}
+@media(max-width:700px){
+ #shop{display:none;top:55px;width:180px;max-height:48vh}
+ #shop.open{display:block}
+ #shopToggle{display:block}
+ #score{top:65px;max-width:135px;font-size:10px}
+ #top{top:10px}
+ #buttons{right:10px;bottom:18px;gap:5px}
+ .skill{width:52px;height:52px;font-size:10px}
+ #attack{width:61px;height:61px}
+ #joystick{width:112px;height:112px;left:15px;bottom:20px}
+ #stick{left:29px;top:29px}
+ .slot{width:48px;height:48px;font-size:9px}
+ #inventory{bottom:7px;gap:3px}
+ #message{top:105px}
+}
 </style>
 </head>
+
 <body>
+
 <div id="menu">
-  <div class="card">
-    <h1>VYRA</h1><div class="sub">LEGENDS ARENA · ORIGINAL 5v5 MOBA</div>
-    <input id="name" maxlength="16" placeholder="Hero name" value="Player">
-    <input id="room" maxlength="16" placeholder="Room code" value="VYRA1">
-    <button id="join">ENTER ARENA</button>
-    <div id="status"></div>
-  </div>
+ <div class="card">
+  <h1>VYRA</h1>
+  <div class="sub">LEGENDS ARENA · ORIGINAL 5V5 MOBA</div>
+  <input id="name" maxlength="16" placeholder="Hero name" value="Player">
+  <input id="room" maxlength="16" placeholder="Room code" value="VYRA1">
+  <button id="join">ENTER ARENA</button>
+  <div id="status">Connect to the arena server.</div>
+ </div>
 </div>
 
 <div id="hud" class="hidden">
-  <div id="top"><b>VYRA · LEGENDS ARENA</b><div id="stats" class="tiny"></div></div>
-  <div id="score"></div>
-  <div id="shop">
-    <b>ITEM FORGE</b>
-    <div class="tiny">Buy repeatedly · click inventory to sell</div>
-    <div class="item" data-id="blade" data-name="Aether Blade" data-price="300" data-damage="25"><b>⚔ Aether Blade</b>+25 Attack · <span class="price">300g</span></div>
-    <div class="item" data-id="armor" data-name="Titan Guard" data-price="400" data-defense="30"><b>🛡 Titan Guard</b>+30 Defense · <span class="price">400g</span></div>
-    <div class="item" data-id="boots" data-name="Storm Boots" data-price="250" data-speed="10"><b>👟 Storm Boots</b>+10 Speed · <span class="price">250g</span></div>
-    <div class="item" data-id="crystal" data-name="Star Crystal" data-price="550" data-power="40"><b>✦ Star Crystal</b>+40 Power · <span class="price">550g</span></div>
+ <div id="top">
+  <b>⚔ VYRA · LEGENDS ARENA</b>
+  <div id="stats">Connecting...</div>
+ </div>
+
+ <div id="score"><b>TEAM BOARD</b><div id="players"></div></div>
+
+ <button id="shopToggle">ITEM SHOP</button>
+
+ <div id="shop">
+  <b>⚒ ITEM FORGE</b>
+  <div class="tiny">Tap an item to buy. Tap inventory to sell.</div>
+
+  <div class="item" data-id="blade" data-name="Aether Blade" data-price="300" data-damage="25">
+   <b>⚔ Aether Blade</b>+25 Attack · <span class="price">300G</span>
   </div>
-  <div id="inventory"></div>
-  <div id="joystick"><div id="stick"></div></div>
-  <div id="buttons"><button class="skill" id="s1">S1</button><button class="skill" id="s2">S2</button><button class="skill" id="ult">ULT</button><button class="skill" id="attack">ATK</button></div>
+
+  <div class="item" data-id="armor" data-name="Titan Guard" data-price="400" data-defense="30">
+   <b>🛡 Titan Guard</b>+30 Defense · <span class="price">400G</span>
+  </div>
+
+  <div class="item" data-id="boots" data-name="Storm Boots" data-price="250" data-speed="10">
+   <b>👟 Storm Boots</b>+10 Speed · <span class="price">250G</span>
+  </div>
+
+  <div class="item" data-id="crystal" data-name="Star Crystal" data-price="550" data-power="40">
+   <b>✦ Star Crystal</b>+40 Power · <span class="price">550G</span>
+  </div>
+ </div>
+
+ <div id="message">Welcome to VYRA Arena!</div>
+ <div id="inventory"></div>
+
+ <div id="joystick"><div id="stick"></div></div>
+
+ <div id="buttons">
+  <button class="skill" id="s1">S1</button>
+  <button class="skill" id="s2">S2</button>
+  <button class="skill" id="ult">ULT</button>
+  <button class="skill" id="attack">ATK</button>
+ </div>
+
+ <button id="leave">LEAVE</button>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+
 <script>
-let ws,myId,me,players={},meshes={},lastMove=0,joy={x:0,y:0},keys={};
-const scene=new THREE.Scene(); scene.background=new THREE.Color(0x07111c);
-const camera=new THREE.PerspectiveCamera(58,innerWidth/innerHeight,.1,500);
+"use strict";
+
+/* =========================
+   VYRA SERVER CONNECTION
+========================= */
+
+const SERVER_URL = "wss://moba-1-u3rn.onrender.com";
+
+let ws = null;
+let myId = null;
+let me = null;
+let players = {};
+let meshes = {};
+let joy = {x:0,y:0};
+let keys = {};
+let lastMove = 0;
+let active = false;
+
+const $ = id => document.getElementById(id);
+
+function notify(text){
+ $("message").textContent = text;
+}
+
+function status(text){
+ $("status").textContent = text;
+}
+
+function send(data){
+ if(ws && ws.readyState === WebSocket.OPEN){
+  ws.send(JSON.stringify(data));
+  return true;
+ }
+ notify("Not connected to server!");
+ return false;
+}
+
+/* =========================
+   CONNECT
+========================= */
+
+function connect(){
+ if(ws && ws.readyState === WebSocket.OPEN) return;
+
+ const name = $("name").value.trim() || "Player";
+ const room = $("room").value.trim() || "VYRA1";
+
+ status("Connecting to VYRA server...");
+ $("join").disabled = true;
+
+ ws = new WebSocket(SERVER_URL);
+
+ ws.onopen = () => {
+  status("Connected! Joining room...");
+  send({
+   type:"join",
+   name:name,
+   room:room
+  });
+ };
+
+ ws.onmessage = event => {
+  let data;
+
+  try{
+   data = JSON.parse(event.data);
+  }catch(e){
+   console.error(e);
+   return;
+  }
+
+  if(data.type === "joined"){
+   myId = data.id;
+   active = true;
+
+   $("menu").classList.add("hidden");
+   $("hud").classList.remove("hidden");
+
+   notify("Welcome, "+name+"!");
+   return;
+  }
+
+  if(data.type === "state"){
+   players = {};
+
+   data.players.forEach(p => {
+    players[p.id] = p;
+   });
+
+   me = players[myId] || null;
+   sync();
+   return;
+  }
+
+  if(data.type === "error"){
+   status(data.message);
+   notify(data.message);
+  }
+
+  if(data.type === "skill"){
+   notify("Player used skill "+data.skill+"!");
+  }
+ };
+
+ ws.onerror = () => {
+  status("Connection error. Check Render deployment.");
+  $("join").disabled = false;
+ };
+
+ ws.onclose = () => {
+  active = false;
+  me = null;
+  myId = null;
+
+  $("menu").classList.remove("hidden");
+  $("hud").classList.add("hidden");
+  $("join").disabled = false;
+
+  status("Server disconnected. Try again.");
+ };
+}
+
+$("join").addEventListener("click",connect);
+
+/* =========================
+   THREE.JS ARENA
+========================= */
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x07111c);
+scene.fog = new THREE.Fog(0x07111c,75,150);
+
+const camera = new THREE.PerspectiveCamera(
+ 58,innerWidth/innerHeight,.1,500
+);
+
 camera.position.set(0,42,34);
-const renderer=new THREE.WebGLRenderer({antialias:true});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2)); renderer.setSize(innerWidth,innerHeight);
+
+const renderer = new THREE.WebGLRenderer({
+ antialias:true
+});
+
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setSize(innerWidth,innerHeight);
+renderer.shadowMap.enabled = true;
+
 document.body.prepend(renderer.domElement);
 
-scene.add(new THREE.HemisphereLight(0xaed8ff,0x122019,2.1));
-const sun=new THREE.DirectionalLight(0xffffff,2.2); sun.position.set(20,45,15); scene.add(sun);
+scene.add(new THREE.HemisphereLight(0xaed8ff,0x122019,2));
 
-function mat(c){return new THREE.MeshStandardMaterial({color:c,roughness:.72,metalness:.18})}
-const ground=new THREE.Mesh(new THREE.PlaneGeometry(120,80),mat(0x1b603d)); ground.rotation.x=-Math.PI/2; scene.add(ground);
-const river=new THREE.Mesh(new THREE.PlaneGeometry(120,10),new THREE.MeshStandardMaterial({color:0x166da0,transparent:true,opacity:.82,roughness:.2})); river.rotation.x=-Math.PI/2; river.position.y=.03; scene.add(river);
+const sun = new THREE.DirectionalLight(0xffffff,2);
+sun.position.set(20,45,15);
+scene.add(sun);
 
-function road(z){const r=new THREE.Mesh(new THREE.PlaneGeometry(110,5.5),mat(0x65543d));r.rotation.x=-Math.PI/2;r.position.set(0,.05,z);scene.add(r)}
-road(-24);road(0);road(24);
-
-function tree(x,z){let a=new THREE.Mesh(new THREE.CylinderGeometry(.55,.8,3.2,8),mat(0x513522));a.position.set(x,1.6,z);let b=new THREE.Mesh(new THREE.SphereGeometry(2.8,12,10),mat(0x164b2b));b.position.set(x,4.3,z);scene.add(a,b)}
-for(let i=0;i<45;i++){let x=Math.random()*108-54,z=Math.random()*68-34;if(Math.abs(z)<7)continue;tree(x,z)}
-
-function base(x,c){let m=new THREE.Mesh(new THREE.CylinderGeometry(7,9,4,16),mat(c));m.position.set(x,2,0);scene.add(m)}
-base(-52,0x2764ff);base(52,0xff3348);
-
-function heroMesh(c){
- const g=new THREE.Group(),body=new THREE.Mesh(new THREE.CylinderGeometry(1.1,1.35,2.6,12),mat(c));
- body.position.y=1.8; const head=new THREE.Mesh(new THREE.SphereGeometry(.95,16,12),mat(0xffc39a));head.position.y=3.8;
- const armor=new THREE.Mesh(new THREE.TorusGeometry(1.2,.16,8,20),mat(0xe8f1ff));armor.rotation.x=Math.PI/2;armor.position.y=2.1;
- const weapon=new THREE.Mesh(new THREE.BoxGeometry(.22,.22,2.8),mat(0xd8e7ff));weapon.position.set(1.45,2.2,0);weapon.rotation.z=.45;
- g.add(body,head,armor,weapon);return g
+function material(color){
+ return new THREE.MeshStandardMaterial({
+  color:color,
+  roughness:.7,
+  metalness:.15
+ });
 }
-function send(o){if(ws&&ws.readyState===1)ws.send(JSON.stringify(o))}
-function connect(){
- const p=location.protocol==="https:"?"wss":"ws";
- const host=location.hostname||"localhost";
- ws=new WebSocket(p+"://"+host+":3000");
- ws.onopen=()=>{status("Connected.");send({type:"join",name:document.querySelector("#name").value||"Player",room:document.querySelector("#room").value||"VYRA1"})};
- ws.onmessage=e=>{let d=JSON.parse(e.data);
-  if(d.type==="joined"){myId=d.id;document.querySelector("#menu").classList.add("hidden");document.querySelector("#hud").classList.remove("hidden")}
-  if(d.type==="state"){players={};d.players.forEach(p=>players[p.id]=p);me=players[myId];sync()}
-  if(d.type==="error")status(d.message)
- };
- ws.onclose=()=>{document.querySelector("#menu").classList.remove("hidden");document.querySelector("#hud").classList.add("hidden");status("Server disconnected.")}
+
+/* GROUND */
+
+const ground = new THREE.Mesh(
+ new THREE.PlaneGeometry(120,80),
+ material(0x1b603d)
+);
+
+ground.rotation.x = -Math.PI/2;
+scene.add(ground);
+
+/* RIVER */
+
+const river = new THREE.Mesh(
+ new THREE.PlaneGeometry(120,9),
+ new THREE.MeshStandardMaterial({
+  color:0x166da0,
+  transparent:true,
+  opacity:.85
+ })
+);
+
+river.rotation.x = -Math.PI/2;
+river.position.y = .04;
+scene.add(river);
+
+/* LANES */
+
+function road(z){
+ const mesh = new THREE.Mesh(
+  new THREE.PlaneGeometry(110,5),
+  material(0x65543d)
+ );
+
+ mesh.rotation.x = -Math.PI/2;
+ mesh.position.set(0,.06,z);
+ scene.add(mesh);
 }
-function status(t){document.querySelector("#status").textContent=t}
+
+road(-24);
+road(0);
+road(24);
+
+/* TREES */
+
+function tree(x,z){
+ const trunk = new THREE.Mesh(
+  new THREE.CylinderGeometry(.55,.8,3,8),
+  material(0x513522)
+ );
+
+ trunk.position.set(x,1.5,z);
+
+ const leaves = new THREE.Mesh(
+  new THREE.SphereGeometry(2.8,12,10),
+  material(0x164b2b)
+ );
+
+ leaves.position.set(x,4,z);
+ scene.add(trunk,leaves);
+}
+
+for(let i=0;i<45;i++){
+ const x = Math.random()*108-54;
+ const z = Math.random()*68-34;
+
+ if(Math.abs(z)<7) continue;
+ tree(x,z);
+}
+
+/* BASES */
+
+function createBase(x,color){
+ const base = new THREE.Mesh(
+  new THREE.CylinderGeometry(7,9,4,20),
+  material(color)
+ );
+
+ base.position.set(x,2,0);
+ scene.add(base);
+
+ const tower = new THREE.Mesh(
+  new THREE.CylinderGeometry(1.5,2,7,12),
+  material(color)
+ );
+
+ tower.position.set(x,7,0);
+ scene.add(tower);
+}
+
+createBase(-52,0x2764ff);
+createBase(52,0xff3348);
+
+/* HERO MODEL */
+
+function createHero(color){
+ const group = new THREE.Group();
+
+ const body = new THREE.Mesh(
+  new THREE.CylinderGeometry(1.1,1.35,2.6,12),
+  material(color)
+ );
+
+ body.position.y = 1.8;
+
+ const head = new THREE.Mesh(
+  new THREE.SphereGeometry(.95,16,12),
+  material(0xffc39a)
+ );
+
+ head.position.y = 3.8;
+
+ const armor = new THREE.Mesh(
+  new THREE.TorusGeometry(1.2,.16,8,20),
+  material(0xe8f1ff)
+ );
+
+ armor.rotation.x = Math.PI/2;
+ armor.position.y = 2.1;
+
+ const weapon = new THREE.Mesh(
+  new THREE.BoxGeometry(.22,.22,2.8),
+  material(0xd8e7ff)
+ );
+
+ weapon.position.set(1.45,2.2,0);
+ weapon.rotation.z = .45;
+
+ group.add(body,head,armor,weapon);
+
+ return group;
+}
+
+/* =========================
+   PLAYER SYNCHRONIZATION
+========================= */
+
 function sync(){
- for(const id in meshes)if(!players[id]){scene.remove(meshes[id]);delete meshes[id]}
- for(const id in players){let p=players[id];if(!meshes[id]){meshes[id]=heroMesh(p.team==="blue"?0x3b82ff:0xff3045);scene.add(meshes[id])}meshes[id].position.set(p.x,0,p.z)}
- if(!me)return;
- document.querySelector("#stats").textContent=`${me.team.toUpperCase()} · HP ${me.hp}/${me.maxHp} · LV ${me.level} · ${me.gold}G · ${Object.keys(players).length}/10`;
- let sc=Object.values(players).map(p=>`${p.team==="blue"?"🔵":"🔴"} ${p.name} · ${p.hp}`).join("<br>");
- document.querySelector("#score").innerHTML="<b>TEAM BOARD</b><br>"+sc;
- let inv=document.querySelector("#inventory");inv.innerHTML="";
- me.items.forEach((it,i)=>{let s=document.createElement("div");s.className="slot";s.innerHTML=it.name+"<br>SELL";s.onclick=()=>send({type:"sell",index:i});inv.appendChild(s)})
+ for(const id in meshes){
+  if(!players[id]){
+   scene.remove(meshes[id]);
+   delete meshes[id];
+  }
+ }
+
+ for(const id in players){
+  const p = players[id];
+
+  if(!meshes[id]){
+   meshes[id] = createHero(
+    p.team === "blue" ? 0x3b82ff : 0xff3045
+   );
+
+   scene.add(meshes[id]);
+  }
+
+  meshes[id].position.set(p.x,0,p.z);
+ }
+
+ if(!me) return;
+
+ $("stats").textContent =
+  me.team.toUpperCase()+
+  " · HP "+me.hp+"/"+me.maxHp+
+  " · LV "+me.level+
+  " · "+me.gold+"G"+
+  " · "+Object.keys(players).length+"/10";
+
+ const list = Object.values(players);
+
+ $("players").innerHTML = list.map(p => {
+  const color = p.team === "blue" ? "🔵" : "🔴";
+
+  return color+" "+escapeHTML(p.name)+
+   " · "+p.hp+" HP";
+ }).join("<br>");
+
+ renderInventory();
 }
-document.querySelector("#join").onclick=connect;
-document.querySelectorAll(".item").forEach(el=>el.onclick=()=>send({type:"buy",id:el.dataset.id,name:el.dataset.name,price:+el.dataset.price,damage:+(el.dataset.damage||0),defense:+(el.dataset.defense||0),speed:+(el.dataset.speed||0),power:+(el.dataset.power||0)}));
-document.querySelector("#attack").onclick=()=>{if(!me)return;let t,b=999;for(const id in players){let p=players[id];if(p.team===me.team)continue;let d=Math.hypot(p.x-me.x,p.z-me.z);if(d<b){b=d;t=id}}if(t&&b<7)send({type:"attack",target:t})};
-document.querySelector("#s1").onclick=()=>send({type:"skill",skill:1});document.querySelector("#s2").onclick=()=>send({type:"skill",skill:2});document.querySelector("#ult").onclick=()=>send({type:"skill",skill:3});
-addEventListener("keydown",e=>keys[e.key.toLowerCase()]=true);addEventListener("keyup",e=>keys[e.key.toLowerCase()]=false);
+
+function escapeHTML(value){
+ return String(value).replace(/[&<>"']/g,c=>({
+  "&":"&amp;",
+  "<":"&lt;",
+  ">":"&gt;",
+  '"':"&quot;",
+  "'":"&#39;"
+ })[c]);
+}
+
+/* =========================
+   ITEM INVENTORY
+========================= */
+
+function renderInventory(){
+ if(!me) return;
+
+ const inv = $("inventory");
+ inv.innerHTML = "";
+
+ me.items.forEach((item,index)=>{
+  const slot = document.createElement("button");
+
+  slot.className = "slot";
+  slot.innerHTML =
+   escapeHTML(item.name)+"<br><span style='color:#ffd166'>SELL</span>";
+
+  slot.title = "Sell for 70% of original price";
+
+  slot.addEventListener("click",()=>{
+   if(confirm("Sell "+item.name+"?")){
+    send({
+     type:"sell",
+     index:index
+    });
+   }
+  });
+
+  inv.appendChild(slot);
+ });
+}
+
+/* BUY ITEMS */
+
+document.querySelectorAll(".item").forEach(el=>{
+ el.addEventListener("click",()=>{
+  if(!me){
+   notify("Enter the arena first!");
+   return;
+  }
+
+  send({
+   type:"buy",
+   id:el.dataset.id,
+   name:el.dataset.name,
+   price:Number(el.dataset.price),
+   damage:Number(el.dataset.damage||0),
+   defense:Number(el.dataset.defense||0),
+   speed:Number(el.dataset.speed||0),
+   power:Number(el.dataset.power||0)
+  });
+
+  notify("Purchase request sent!");
+ });
+});
+
+/* MOBILE SHOP */
+
+$("shopToggle").addEventListener("click",()=>{
+ $("shop").classList.toggle("open");
+});
+
+/* =========================
+   ATTACK SYSTEM
+========================= */
+
+function attack(){
+ if(!me) return;
+
+ let target = null;
+ let nearest = Infinity;
+
+ for(const id in players){
+  const p = players[id];
+
+  if(p.team === me.team || p.hp <= 0) continue;
+
+  const distance = Math.hypot(
+   p.x-me.x,
+   p.z-me.z
+  );
+
+  if(distance < nearest){
+   nearest = distance;
+   target = id;
+  }
+ }
+
+ if(!target || nearest > 7){
+  notify("No enemy in attack range!");
+  return;
+ }
+
+ send({
+  type:"attack",
+  target:target
+ });
+
+ notify("Attack sent!");
+}
+
+$("attack").addEventListener("click",attack);
+
+/* SKILLS */
+
+function useSkill(skill){
+ if(!me) return;
+
+ send({
+  type:"skill",
+  skill:skill
+ });
+
+ notify("Skill "+skill+" activated!");
+}
+
+$("s1").addEventListener("click",()=>useSkill(1));
+$("s2").addEventListener("click",()=>useSkill(2));
+$("ult").addEventListener("click",()=>useSkill(3));
+
+/* =========================
+   KEYBOARD CONTROLS
+========================= */
+
+addEventListener("keydown",e=>{
+ const key = e.key.toLowerCase();
+
+ keys[key] = true;
+
+ if(["w","a","s","d"," "].includes(key)){
+  e.preventDefault();
+ }
+
+ if(key==="j") attack();
+ if(key==="1") useSkill(1);
+ if(key==="2") useSkill(2);
+ if(key==="3") useSkill(3);
+});
+
+addEventListener("keyup",e=>{
+ keys[e.key.toLowerCase()] = false;
+});
+
+/* =========================
+   MOBILE JOYSTICK
+========================= */
+
+let dragging = false;
+
+const joystick = $("joystick");
+const stick = $("stick");
+
+function joystickMove(e){
+ const rect = joystick.getBoundingClientRect();
+
+ const cx = rect.left + rect.width/2;
+ const cy = rect.top + rect.height/2;
+
+ let x = (e.clientX-cx)/43;
+ let y = (e.clientY-cy)/43;
+
+ const length = Math.hypot(x,y);
+
+ if(length>1){
+  x/=length;
+  y/=length;
+ }
+
+ joy = {x,y};
+
+ stick.style.transform =
+  `translate(${x*35}px,${y*35}px)`;
+}
+
+joystick.addEventListener("pointerdown",e=>{
+ dragging = true;
+ joystick.setPointerCapture(e.pointerId);
+ joystickMove(e);
+});
+
+joystick.addEventListener("pointermove",e=>{
+ if(dragging) joystickMove(e);
+});
+
+function resetJoystick(){
+ dragging = false;
+ joy = {x:0,y:0};
+ stick.style.transform = "";
+}
+
+joystick.addEventListener("pointerup",resetJoystick);
+joystick.addEventListener("pointercancel",resetJoystick);
+
+/* =========================
+   MOVEMENT
+========================= */
+
 function move(){
- if(!me)return;let x=(keys.d?1:0)-(keys.a?1:0)+joy.x,y=(keys.s?1:0)-(keys.w?1:0)+joy.y;
- if(!x&&!y)return;let n=Math.hypot(x,y);x/=n;y/=n;let sp=.28;
- me.x+=x*sp;me.z+=y*sp;
- if(Date.now()-lastMove>45){lastMove=Date.now();send({type:"move",x:me.x,z:me.z})}
+ if(!me || !active) return;
+
+ let x =
+  (keys.d?1:0)-
+  (keys.a?1:0)+joy.x;
+
+ let z =
+  (keys.s?1:0)-
+  (keys.w?1:0)+joy.y;
+
+ if(!x && !z) return;
+
+ const length = Math.hypot(x,z);
+
+ x/=length;
+ z/=length;
+
+ const speedBonus = me.items.reduce(
+  (sum,item)=>sum+item.speed,0
+ );
+
+ const speed = .22 + speedBonus*.003;
+
+ me.x = Math.max(-55,Math.min(55,me.x+x*speed));
+ me.z = Math.max(-35,Math.min(35,me.z+z*speed));
+
+ if(Date.now()-lastMove>60){
+  lastMove = Date.now();
+
+  send({
+   type:"move",
+   x:me.x,
+   z:me.z
+  });
+ }
 }
-let dragging=false;
-const j=document.querySelector("#joystick"),st=document.querySelector("#stick");
-function joyMove(e){let r=j.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;let x=(e.clientX-cx)/48,y=(e.clientY-cy)/48;let n=Math.hypot(x,y);if(n>1){x/=n;y/=n}joy={x,y};st.style.transform=`translate(${x*38}px,${y*38}px)`}
-j.addEventListener("pointerdown",e=>{dragging=true;j.setPointerCapture(e.pointerId);joyMove(e)});j.addEventListener("pointermove",e=>{if(dragging)joyMove(e)});j.addEventListener("pointerup",()=>{dragging=false;joy={x:0,y:0};st.style.transform=""});
-function loop(){requestAnimationFrame(loop);move();if(me&&meshes[myId]){let h=meshes[myId];camera.position.x+=(h.position.x-camera.position.x)*.08;camera.position.z+=(h.position.z+32-camera.position.z)*.08;camera.lookAt(h.position.x,0,h.position.z)}renderer.render(scene,camera)}
+
+/* =========================
+   LEAVE ARENA
+========================= */
+
+$("leave").addEventListener("click",()=>{
+ if(ws){
+  ws.close();
+ }
+});
+
+/* =========================
+   GAME LOOP
+========================= */
+
+function loop(){
+ requestAnimationFrame(loop);
+
+ move();
+
+ if(me && meshes[myId]){
+  const hero = meshes[myId];
+
+  camera.position.x +=
+   (hero.position.x-camera.position.x)*.08;
+
+  camera.position.z +=
+   (hero.position.z+32-camera.position.z)*.08;
+
+  camera.lookAt(
+   hero.position.x,
+   0,
+   hero.position.z
+  );
+ }
+
+ renderer.render(scene,camera);
+}
+
 loop();
-addEventListener("resize",()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+
+/* =========================
+   RESIZE
+========================= */
+
+addEventListener("resize",()=>{
+ camera.aspect = innerWidth/innerHeight;
+ camera.updateProjectionMatrix();
+
+ renderer.setSize(innerWidth,innerHeight);
+});
 </script>
+
 </body>
 </html>
