@@ -3,443 +3,404 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>VYRA — Filipino Legends Arena</title>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VYRA - Filipino Legends Arena</title>
 <style>
 *{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#06101b;color:white;font-family:Arial,sans-serif}
-canvas{display:block}
-.hidden{display:none!important}
-button{color:white;border:0;font-weight:900;cursor:pointer;touch-action:manipulation}
-#menu{position:fixed;inset:0;z-index:20;overflow:auto;background:radial-gradient(circle at 50% 20%,#205b91,#06101b 75%);padding:18px}
-.brand{text-align:center;margin:12px auto 18px}
-.brand h1{font-size:48px;letter-spacing:8px;margin:0;color:#e9f6ff;text-shadow:0 0 25px #37aaff}
-.brand p{font-size:11px;letter-spacing:3px;color:#9acfff}
-.panel{max-width:1050px;margin:auto;background:#071321ed;border:1px solid #4c83b7;border-radius:20px;padding:18px;box-shadow:0 20px 80px #0009}
-.section-title{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
-.section-title h2{margin:4px 0 12px;font-size:20px}
-#heroGrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;max-height:48vh;overflow:auto;padding:3px}
-.hero-card{background:linear-gradient(145deg,#193c5a,#0b1727);border:1px solid #355675;border-radius:12px;padding:9px;text-align:center;min-width:0;cursor:pointer}
-.hero-card.selected{border:2px solid #66d5ff;box-shadow:0 0 18px #36baff77;background:linear-gradient(145deg,#245c83,#10243b)}
-.hero-avatar{height:65px;border-radius:9px;display:grid;place-items:center;font-size:34px;background:radial-gradient(circle,#477fa8,#102039);margin-bottom:7px}
-.hero-card b{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.hero-card small{display:block;color:#a9d5ff;margin-top:4px;font-size:10px}
-#heroDetails{display:flex;align-items:center;gap:15px;margin:14px 0;padding:13px;background:#10243a;border:1px solid #355675;border-radius:12px}
-#bigAvatar{font-size:42px;width:65px;height:65px;display:grid;place-items:center;background:#244e70;border-radius:12px;flex-shrink:0}
-#heroInfo{flex:1;min-width:0}
-#heroInfo h3{margin:0 0 4px}
-#heroInfo p{font-size:12px;color:#c2d8ed;margin:4px 0}
-#heroInfo .skills{color:#83d5ff}
-input{width:100%;padding:13px;margin:5px 0;border-radius:10px;border:1px solid #45617c;background:#091522;color:white;font-size:15px}
-.inputs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-#join{width:100%;padding:15px;border-radius:12px;margin-top:10px;background:linear-gradient(120deg,#238bff,#773dff);font-size:15px}
-#status{text-align:center;min-height:22px;color:#9fd0ff;margin-top:10px;font-size:12px}
-#hud{position:fixed;inset:0;z-index:5;pointer-events:none}
-#top{position:absolute;top:12px;left:50%;transform:translateX(-50%);padding:9px 18px;border-radius:20px;background:#050b14dd;border:1px solid #ffffff33;text-align:center;white-space:nowrap;font-size:12px}
-#stats{font-size:11px;opacity:.8;margin-top:4px}
-#score{position:absolute;left:12px;top:12px;padding:11px;background:#06101ddd;border:1px solid #ffffff33;border-radius:12px;font-size:11px;line-height:1.7;max-width:190px}
-#shop{position:absolute;right:12px;top:12px;width:220px;padding:12px;background:#06101ded;border:1px solid #ffffff33;border-radius:15px;pointer-events:auto;max-height:55vh;overflow:auto}
-.item{padding:10px;margin:7px 0;border-radius:10px;background:#142b43;border:1px solid #355675;cursor:pointer;font-size:12px}
-.item b{display:block;font-size:13px;margin-bottom:4px}
-.price{color:#ffd166}
-#shopToggle{display:none;position:absolute;right:12px;top:12px;padding:12px;border-radius:12px;background:#174a80;pointer-events:auto}
-#inventory{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);display:flex;gap:6px;pointer-events:auto}
-.slot{width:65px;height:53px;border-radius:9px;background:#07121fee;border:1px solid #6485a5;display:grid;place-items:center;text-align:center;font-size:10px;cursor:pointer;padding:3px}
-#joystick{position:absolute;left:22px;bottom:25px;width:125px;height:125px;border-radius:50%;background:#ffffff12;border:2px solid #ffffff33;pointer-events:auto;touch-action:none}
-#stick{position:absolute;left:34px;top:34px;width:54px;height:54px;border-radius:50%;background:#4f8cffcc;pointer-events:none}
-#buttons{position:absolute;right:18px;bottom:22px;display:flex;gap:8px;pointer-events:auto;align-items:center}
-.skill{width:62px;height:62px;border-radius:50%;background:#183755;border:2px solid #77adff;box-shadow:0 4px 15px #0009;font-size:11px}
-.skill:active{transform:scale(.91);background:#3976bc}
-#attack{background:#762630;border-color:#ff8790;width:70px;height:70px}
-#message{position:absolute;left:50%;top:75px;transform:translateX(-50%);padding:9px 15px;background:#06101ddd;border-radius:12px;color:#c6e6ff;font-size:12px;white-space:nowrap}
-#leave{position:absolute;left:12px;bottom:12px;pointer-events:auto;background:#782d36;padding:9px 13px;border-radius:9px;font-size:11px}
-@media(max-width:700px){
- #heroGrid{grid-template-columns:repeat(3,minmax(0,1fr));max-height:43vh}
- .hero-avatar{height:55px}
- .inputs{grid-template-columns:1fr}
- #shop{display:none;top:55px;width:180px;max-height:48vh}
- #shop.open{display:block}
- #shopToggle{display:block}
- #score{top:65px;max-width:135px;font-size:10px}
- #top{top:10px}
- #buttons{right:10px;bottom:18px;gap:5px}
- .skill{width:51px;height:51px;font-size:10px}
- #attack{width:61px;height:61px}
- #joystick{width:112px;height:112px;left:15px;bottom:20px}
- #stick{left:29px;top:29px}
- .slot{width:48px;height:48px;font-size:9px}
- #inventory{bottom:7px;gap:3px}
- #message{top:105px}
+body{margin:0;background:#07111f;color:white;font-family:Arial,sans-serif;overflow:hidden}
+button,input,select{font:inherit}
+button{cursor:pointer;border:0;border-radius:9px;padding:11px 16px;background:#16a6c9;color:white;font-weight:bold}
+button:hover{filter:brightness(1.2)}
+#lobby{position:absolute;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at center,#173f62,#07111f 70%);overflow:auto}
+.panel{width:min(950px,95vw);max-height:95vh;overflow:auto;padding:25px;background:#101f32;border:1px solid #2c6687;border-radius:18px;box-shadow:0 15px 70px #000}
+h1{color:#51d9ff;letter-spacing:5px;text-align:center;font-size:42px;margin:5px}
+.sub{text-align:center;color:#a6c5d7;margin-bottom:22px}
+.fields{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+input,select{width:100%;padding:12px;border-radius:8px;border:1px solid #31536c;background:#071727;color:white}
+.heroes{display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:9px;margin:17px 0}
+.hero{padding:12px 5px;border:1px solid #34516a;background:#172a40;border-radius:10px;text-align:center;cursor:pointer}
+.hero.selected{border:2px solid #48dfff;background:#16465b}
+.hero .emoji{font-size:29px}
+.hero small{display:block;color:#a9c8d8;margin-top:5px}
+#start{width:100%;font-size:18px;padding:15px}
+#game{display:none;position:absolute;inset:0}
+canvas{width:100%;height:100%;display:block}
+#hud{position:absolute;top:10px;left:10px;right:10px;pointer-events:none;display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.hudbox{background:#071827dc;border:1px solid #2d617d;border-radius:10px;padding:10px;font-size:13px;pointer-events:auto}
+#health{width:190px;height:12px;background:#452a36;border-radius:8px;overflow:hidden;margin-top:6px}
+#healthbar{height:100%;width:100%;background:#27df79}
+#notice{position:absolute;top:85px;left:50%;transform:translateX(-50%);background:#061b2ddd;padding:10px 18px;border-radius:10px;color:#b8efff;pointer-events:none}
+#shop{position:absolute;right:10px;top:105px;width:175px;background:#091a2bdc;border:1px solid #315d77;border-radius:12px;padding:10px}
+#shop h3{margin:2px 0 10px;color:#55dfff}
+.item{width:100%;margin:4px 0;text-align:left;font-size:12px;padding:9px}
+#controls{position:absolute;bottom:15px;left:15px;right:15px;display:flex;justify-content:space-between;align-items:flex-end;pointer-events:none}
+#controls button{pointer-events:auto;box-shadow:0 3px 12px #0009}
+#stick{width:120px;height:120px;border-radius:50%;background:#ffffff20;border:2px solid #ffffff55;position:relative;touch-action:none;pointer-events:auto}
+#knob{position:absolute;width:48px;height:48px;left:34px;top:34px;background:#9cecffaa;border-radius:50%}
+.actions{display:flex;gap:8px;align-items:flex-end}
+.action{width:65px;height:65px;border-radius:50%;background:#175b86;border:2px solid #77dfff;padding:5px}
+.action.attack{width:78px;height:78px;background:#b34b25}
+.action small{display:block;font-size:10px}
+#score{position:absolute;top:75px;left:10px;background:#061827cc;padding:8px;border-radius:8px;font-size:12px}
+#mapinfo{position:absolute;bottom:5px;left:50%;transform:translateX(-50%);font-size:11px;color:#bceeff;pointer-events:none}
+@media(max-width:650px){
+.panel{padding:14px}.fields{grid-template-columns:1fr 1fr}
+#shop{width:135px;top:110px}.item{font-size:10px;padding:7px}
+.hudbox{font-size:11px;padding:7px}
+#stick{width:100px;height:100px}
+#knob{left:26px;top:26px}
+.action{width:53px;height:53px}.action.attack{width:65px;height:65px}
 }
 </style>
 </head>
 <body>
-
-<div id="menu">
- <div class="brand">
-  <h1>VYRA</h1>
-  <p>FILIPINO LEGENDS · 5V5 MOBA</p>
- </div>
-
+<div id="lobby">
  <div class="panel">
-  <div class="section-title">
-   <h2>🇵🇭 CHOOSE YOUR LEGEND</h2>
-   <span id="heroCount">30 HEROES</span>
+  <h1>VYRA</h1>
+  <div class="sub">FILIPINO LEGENDS ARENA · 5V5 MULTIPLAYER</div>
+  <div class="fields">
+   <input id="playerName" placeholder="Player name" maxlength="20" value="Player">
+   <input id="roomName" placeholder="Room code" maxlength="24" value="VYRA-1">
+   <select id="spell">
+    <option value="heal">Heal</option>
+    <option value="flicker">Flicker</option>
+    <option value="sprint">Sprint</option>
+    <option value="flameshot">Flameshot</option>
+   </select>
   </div>
-
-  <div id="heroGrid"></div>
-
-  <div id="heroDetails">
-   <div id="bigAvatar">⚔️</div>
-   <div id="heroInfo">
-    <h3 id="detailName">Choose a hero</h3>
-    <p id="detailRole">Select your Filipino legend</p>
-    <p id="detailDesc">Your journey begins here.</p>
-    <p class="skills" id="detailSkills">Skills will appear here.</p>
-   </div>
-  </div>
-
-  <div class="inputs">
-   <input id="name" maxlength="16" placeholder="Your player name" value="Player">
-   <input id="room" maxlength="16" placeholder="Room code" value="VYRA1">
-  </div>
-
-  <button id="join">⚔ ENTER BATTLE</button>
-  <div id="status">Choose your hero and connect to the arena.</div>
+  <h3>SELECT YOUR HERO</h3>
+  <div class="heroes" id="heroes"></div>
+  <button id="start">ENTER BATTLE</button>
+  <p class="sub" id="status">Choose your hero and join a room.</p>
  </div>
 </div>
 
-<div id="hud" class="hidden">
- <div id="top">
-  <b>🇵🇭 VYRA · FILIPINO LEGENDS</b>
-  <div id="stats">Connecting...</div>
+<div id="game">
+ <canvas id="world"></canvas>
+ <div id="hud">
+  <div class="hudbox">
+   <b id="heroLabel">Hero</b>
+   <div id="health"><div id="healthbar"></div></div>
+   <span id="hpText">HP: --</span>
+  </div>
+  <div class="hudbox" id="teamLabel">TEAM</div>
+  <div class="hudbox">🪙 <b id="gold">1000</b><br>Level <b id="level">1</b></div>
  </div>
- <div id="score"><b>TEAM BOARD</b><div id="players"></div></div>
- <button id="shopToggle">ITEM SHOP</button>
-
+ <div id="score">Players: 0 / 10<br>Wave: 0</div>
+ <div id="notice">Welcome to VYRA Arena!</div>
  <div id="shop">
-  <b>⚒ ITEM FORGE</b>
-  <div class="item" data-id="blade" data-name="Katipunan Blade" data-price="300" data-damage="25"><b>⚔ Katipunan Blade</b>+25 Attack · <span class="price">300G</span></div>
-  <div class="item" data-id="armor" data-name="Rajah Armor" data-price="400" data-defense="30"><b>🛡 Rajah Armor</b>+30 Defense · <span class="price">400G</span></div>
-  <div class="item" data-id="boots" data-name="Agila Boots" data-price="250" data-speed="10"><b>👟 Agila Boots</b>+10 Speed · <span class="price">250G</span></div>
-  <div class="item" data-id="crystal" data-name="Bathala Crystal" data-price="550" data-power="40"><b>✦ Bathala Crystal</b>+40 Power · <span class="price">550G</span></div>
+  <h3>⚔ ITEM SHOP</h3>
+  <button class="item" data-item="blade">Blade · 500 gold</button>
+  <button class="item" data-item="armor">Armor · 450 gold</button>
+  <button class="item" data-item="boots">Boots · 400 gold</button>
+  <button class="item" data-item="crystal">Crystal · 700 gold</button>
+  <button class="item" data-item="guardian">Guardian · 900 gold</button>
+  <button class="item" data-item="greatsword">Greatsword · 1200 gold</button>
+  <small id="inventory">Inventory: empty</small>
  </div>
-
- <div id="message">Welcome to VYRA Arena!</div>
- <div id="inventory"></div>
- <div id="joystick"><div id="stick"></div></div>
- <div id="buttons">
-  <button class="skill" id="s1">S1</button>
-  <button class="skill" id="s2">S2</button>
-  <button class="skill" id="ult">ULT</button>
-  <button class="skill" id="attack">ATK</button>
+ <div id="controls">
+  <div id="stick"><div id="knob"></div></div>
+  <div class="actions">
+   <button class="action" id="spellBtn">✨<small id="spellName">HEAL</small></button>
+   <button class="action" data-skill="1">1<small>SKILL</small></button>
+   <button class="action" data-skill="2">2<small>SKILL</small></button>
+   <button class="action" data-skill="3">3<small>ULTIMATE</small></button>
+   <button class="action attack" id="attack">⚔<small>ATTACK</small></button>
+  </div>
  </div>
- <button id="leave">LEAVE</button>
+ <div id="mapinfo">EXP LANE · MID LANE · GOLD LANE | JUNGLE · RIVER</div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
 <script>
-"use strict";
-
-const SERVER_URL="wss://moba-1-u3rn.onrender.com";
-
-/* ORIGINAL FILIPINO-INSPIRED HERO ROSTER */
-const HEROES=[
-{id:"rizal",name:"Dr. José Rizal",role:"Mage",icon:"📚",color:0x48a9e8,hp:2500,damage:180,speed:5,desc:"The national hero who turns knowledge into energy.",skills:["Noli Blast","El Filibusterismo","Mi Ultimo Adios"]},
-{id:"bonifacio",name:"Andrés Bonifacio",role:"Fighter",icon:"⚔️",color:0xb83c35,hp:3200,damage:210,speed:6,desc:"The Supremo leads the charge with fearless attacks.",skills:["Katipunan Strike","Cry of Freedom","Supremo's Wrath"]},
-{id:"lapulapu",name:"Lapu-Lapu",role:"Tank",icon:"🛡️",color:0xd49a38,hp:4200,damage:150,speed:5,desc:"The defender of Mactan stands strong.",skills:["Mactan Guard","Warrior's Charge","Shield of Mactan"]},
-{id:"gabriela",name:"Gabriela Silang",role:"Assassin",icon:"🏹",color:0x9c55d8,hp:2700,damage:240,speed:8,desc:"A fearless leader with swift strikes.",skills:["Silang Dash","Rebel's Mark","Last Stand"]},
-{id:"sora",name:"Melchora Aquino",role:"Support",icon:"🌿",color:0x49a878,hp:3300,damage:110,speed:5,desc:"Tandang Sora protects and restores allies.",skills:["Mother's Care","Healing Light","Spirit of Bayanihan"]},
-{id:"mabini",name:"Apolinario Mabini",role:"Support",icon:"📜",color:0x7794b8,hp:3000,damage:140,speed:5,desc:"The Sublime Paralytic controls the battlefield with strategy.",skills:["Strategic Seal","Mind's Barrier","Sublime Order"]},
-{id:"diego",name:"Diego Silang",role:"Fighter",icon:"🔥",color:0xc76c38,hp:3300,damage:200,speed:6,desc:"A revolutionary fighter with powerful attacks.",skills:["Ilocos Rush","Rebel Slash","Northern Flame"]},
-{id:"kudarat",name:"Sultan Kudarat",role:"Tank",icon:"👑",color:0xc49b36,hp:4300,damage:160,speed:5,desc:"A ruler who stands firm to defend his people.",skills:["Royal Guard","Sultan's Advance","Datu's Command"]},
-{id:"gregoria",name:"Gregoria de Jesus",role:"Assassin",icon:"🌙",color:0x8658b8,hp:2800,damage:230,speed:8,desc:"Lakambini moves swiftly and strikes with precision.",skills:["Secret Passage","Katipunan Veil","Lakambini's Edge"]},
-{id:"juanluna",name:"Juan Luna",role:"Mage",icon:"🎨",color:0xb56c9e,hp:2600,damage:220,speed:5,desc:"An artist whose colors become magical power.",skills:["Spoliarium","Painted Storm","Masterpiece"]},
-{id:"antonio",name:"Antonio Luna",role:"Fighter",icon:"🎖️",color:0x9b4c3c,hp:3400,damage:210,speed:6,desc:"A disciplined commander with powerful combos.",skills:["General's Order","Tactical Rush","Luna's Charge"]},
-{id:"teresa",name:"Teresa Magbanua",role:"Marksman",icon:"🏹",color:0x478b9e,hp:2800,damage:230,speed:7,desc:"The Visayan Joan of Arc strikes from a distance.",skills:["Sharpshot","Warrior's Aim","Panay Volley"]},
-{id:"jacinto",name:"Emilio Jacinto",role:"Mage",icon:"📖",color:0x5d9ac7,hp:2700,damage:210,speed:6,desc:"The Brain of the Katipunan uses knowledge as power.",skills:["Kartilya Rune","Wisdom Pulse","Young General"]},
-{id:"aguinaldo",name:"Emilio Aguinaldo",role:"Fighter",icon:"🇵🇭",color:0x527dba,hp:3400,damage:190,speed:5,desc:"A commander who inspires his team.",skills:["Flag Charge","Republic Guard","Independence"]},
-{id:"urdaneta",name:"Andrés de Urdaneta",role:"Mage",icon:"🧭",color:0x4c9fbd,hp:2700,damage:200,speed:5,desc:"A navigator who bends the path of the battlefield.",skills:["Ocean Map","Current Shift","Voyager's Path"]},
-{id:"quezon",name:"Manuel L. Quezon",role:"Support",icon:"🗣️",color:0x7a9e6a,hp:3200,damage:130,speed:5,desc:"A leader who strengthens the whole team.",skills:["Unity Call","Commonwealth Guard","Filipino Spirit"]},
-{id:"osmena",name:"Sergio Osmeña",role:"Support",icon:"⭐",color:0x9b9dba,hp:3100,damage:120,speed:5,desc:"A steady ally who supports team survival.",skills:["Steady Voice","Team Rally","Public Service"]},
-{id:"delpilar",name:"Gregorio del Pilar",role:"Assassin",icon:"🗡️",color:0x9c6c4b,hp:2750,damage:245,speed:8,desc:"The young general moves quickly through battle.",skills:["Tirad Dash","Mountain Ambush","Young General's Glory"]},
-{id:"aguinaldo2",name:"Apolinario de la Cruz",role:"Tank",icon:"🛡️",color:0x8a774d,hp:4100,damage:155,speed:5,desc:"Hermano Pule stands firm with courage.",skills:["Pule's Guard","Faithful Charge","Courage of Tayabas"]},
-{id:"luna2",name:"Marcelo H. del Pilar",role:"Mage",icon:"🖋️",color:0x6393b5,hp:2650,damage:205,speed:5,desc:"The propagandist turns words into powerful spells.",skills:["La Solidaridad","Pen Strike","Freedom's Voice"]},
-{id:"urduja",name:"Princess Urduja",role:"Fighter",icon:"👸",color:0xc17bba,hp:3500,damage:200,speed:6,desc:"A legendary warrior princess from Pangasinan tradition.",skills:["Royal Blade","Warrior's Grace","Princess's Resolve"]},
-{id:"lamang",name:"Lam-Ang",role:"Fighter",icon:"🐓",color:0xd68c43,hp:3600,damage:205,speed:6,desc:"The epic hero from the Ilocano legend.",skills:["Epic Leap","Talking Rooster","Biag ni Lam-Ang"]},
-{id:"makiling",name:"Maria Makiling",role:"Mage",icon:"🌺",color:0x4caa7b,hp:2900,damage:215,speed:6,desc:"Guardian spirit of the mountain in Philippine folklore.",skills:["Forest Bloom","Mountain Mist","Guardian's Blessing"]},
-{id:"carpio",name:"Bernardo Carpio",role:"Tank",icon:"⛰️",color:0x9c7653,hp:4500,damage:170,speed:4,desc:"A legendary strongman with immense defense.",skills:["Mountain Fist","Stone Wall","Earthquake"]},
-{id:"sarimanok",name:"Sarimanok",role:"Marksman",icon:"🦚",color:0x45a5a0,hp:2800,damage:225,speed:7,desc:"A mythical bird spirit with radiant ranged attacks.",skills:["Feather Shot","Rainbow Flight","Radiant Wings"]},
-{id:"bakunawa",name:"Bakunawa",role:"Mage",icon:"🐉",color:0x7354b9,hp:3100,damage:230,speed:5,desc:"A mythical moon-eating serpent from Filipino folklore.",skills:["Moon Wave","Serpent Coil","Eclipse"]},
-{id:"kapre",name:"Kapre",role:"Tank",icon:"🌳",color:0x687b45,hp:4400,damage:160,speed:4,desc:"A giant tree-dwelling folklore being.",skills:["Smoke Cloud","Ancient Roots","Forest Giant"]},
-{id:"tikbalang",name:"Tikbalang",role:"Assassin",icon:"🐎",color:0xa87846,hp:2900,damage:240,speed:9,desc:"A swift trickster from Philippine folklore.",skills:["Wild Sprint","Trickster Step","Enchanted Trail"]},
-{id:"manananggal",name:"Manananggal",role:"Assassin",icon:"🦇",color:0x80508f,hp:2700,damage:250,speed:8,desc:"A mysterious night creature from folklore.",skills:["Night Dive","Shadow Wings","Midnight Hunt"]},
-{id:"diwata",name:"Diwata",role:"Support",icon:"🧚",color:0x59bca7,hp:3200,damage:145,speed:6,desc:"A nature spirit who protects allies.",skills:["Nature's Touch","Bloom Shield","Enchanted Garden"]}
+const roster=[
+["rizal","Jose Rizal","Mage","📜"],["bonifacio","Andres Bonifacio","Fighter","⚔️"],
+["lapulapu","Lapulapu","Tank","🛡️"],["gabriela","Gabriela Silang","Fighter","🏹"],
+["sora","Sora","Assassin","🌙"],["mabini","Apolinario Mabini","Mage","📖"],
+["diego","Diego Silang","Fighter","🗡️"],["kudarat","Sultan Kudarat","Tank","👑"],
+["gregoria","Gregoria de Jesus","Support","🌺"],["juanluna","Juan Luna","Mage","🎨"],
+["antonio","Antonio Luna","Fighter","⚔️"],["teresa","Teresa Magbanua","Marksman","🏹"],
+["jacinto","Emilio Jacinto","Assassin","🔥"],["aguinaldo","Emilio Aguinaldo","Fighter","🎖️"],
+["urdaneta","Urdaneta","Mage","🌊"],["quezon","Manuel Quezon","Tank","🛡️"],
+["osmena","Sergio Osmeña","Support","⭐"],["delpilar","Del Pilar","Fighter","⚔️"],
+["aguinaldo2","Aguinaldo II","Marksman","🏹"],["luna2","Luna II","Assassin","🌙"],
+["urduja","Princess Urduja","Tank","👑"],["lamang","Lam-Ang","Fighter","🐉"],
+["makiling","Maria Makiling","Mage","🌸"],["carpio","Bernardo Carpio","Tank","⛰️"],
+["sarimanok","Sarimanok","Marksman","🦅"],["bakunawa","Bakunawa","Tank","🐉"],
+["kapre","Kapre","Tank","🌳"],["tikbalang","Tikbalang","Assassin","🐎"],
+["manananggal","Manananggal","Mage","🦇"],["diwata","Diwata","Support","🧚"]
 ];
 
-let selectedHero=HEROES[0];
-let ws=null,myId=null,me=null,players={},meshes={};
-let joy={x:0,y:0},keys={},lastMove=0,active=false;
+let selected=roster[0],socket=null,myId=null,myTeam=null,players=[],minions=[],towers=[],boss=null;
+let gold=1000,level=1,inventory=[],spell="heal",gameStarted=false;
 const $=id=>document.getElementById(id);
+const heroGrid=$("heroes");
 
-function notify(t){$("message").textContent=t}
-function status(t){$("status").textContent=t}
-function escapeHTML(v){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+roster.forEach((h,i)=>{
+ const el=document.createElement("div");
+ el.className="hero"+(i===0?" selected":"");
+ el.innerHTML=`<div class="emoji">${h[3]}</div><b>${h[1]}</b><small>${h[2]}</small>`;
+ el.onclick=()=>{
+  selected=h;
+  document.querySelectorAll(".hero").forEach(x=>x.classList.remove("selected"));
+  el.classList.add("selected");
+ };
+ heroGrid.appendChild(el);
+});
 
-/* HERO DRAFT */
-function renderHeroGrid(){
- $("heroCount").textContent=HEROES.length+" HEROES";
- $("heroGrid").innerHTML="";
- HEROES.forEach(h=>{
-  const card=document.createElement("div");
-  card.className="hero-card"+(h.id===selectedHero.id?" selected":"");
-  card.innerHTML=`<div class="hero-avatar">${h.icon}</div><b>${escapeHTML(h.name)}</b><small>${h.role}</small>`;
-  card.onclick=()=>selectHero(h.id);
-  $("heroGrid").appendChild(card);
- });
+function notify(msg){
+ $("notice").textContent=msg;
 }
-function selectHero(id){
- selectedHero=HEROES.find(h=>h.id===id)||HEROES[0];
- $("bigAvatar").textContent=selectedHero.icon;
- $("detailName").textContent=selectedHero.name;
- $("detailRole").textContent=selectedHero.role+" · HP "+selectedHero.hp+" · ATK "+selectedHero.damage;
- $("detailDesc").textContent=selectedHero.desc;
- $("detailSkills").textContent="S1: "+selectedHero.skills[0]+" · S2: "+selectedHero.skills[1]+" · ULT: "+selectedHero.skills[2];
- renderHeroGrid();
-}
-selectHero("rizal");
-
-/* SERVER */
 function send(data){
- if(ws&&ws.readyState===WebSocket.OPEN){ws.send(JSON.stringify(data));return true}
- notify("Not connected to server!");
- return false;
+ if(socket&&socket.readyState===WebSocket.OPEN)socket.send(JSON.stringify(data));
 }
-function connect(){
- if(ws&&ws.readyState===WebSocket.OPEN)return;
- const playerName=$("name").value.trim()||"Player";
- const room=$("room").value.trim()||"VYRA1";
- status("Connecting to VYRA server...");
- $("join").disabled=true;
- ws=new WebSocket(SERVER_URL);
 
- ws.onopen=()=>{
-  status("Connected! Joining room...");
-  send({type:"join",name:playerName,room:room,hero:selectedHero.id,heroName:selectedHero.name,heroRole:selectedHero.role});
+$("start").onclick=()=>{
+ spell=$("spell").value;
+ $("status").textContent="Connecting to VYRA server...";
+ socket=new WebSocket("wss://moba-1-u3rn.onrender.com");
+
+ socket.onopen=()=>{
+  send({
+   type:"join",
+   name:$("playerName").value||"Player",
+   room:$("roomName").value||"VYRA-1",
+   hero:selected[0],
+   heroName:selected[1],
+   heroRole:selected[2],
+   spell
+  });
  };
- ws.onmessage=e=>{
-  let data;
-  try{data=JSON.parse(e.data)}catch(err){return}
-  if(data.type==="joined"){
-   myId=data.id;active=true;
-   $("menu").classList.add("hidden");
-   $("hud").classList.remove("hidden");
-   notify("You selected "+selectedHero.name+"!");
-   return;
+
+ socket.onmessage=e=>{
+  const d=JSON.parse(e.data);
+  if(d.type==="joined"){
+   myId=d.id;myTeam=d.team;
+   $("lobby").style.display="none";
+   $("game").style.display="block";
+   $("heroLabel").textContent=selected[1];
+   $("teamLabel").textContent=myTeam.toUpperCase()+" TEAM";
+   $("spellName").textContent=spell.toUpperCase();
+   gameStarted=true;
+   initializeWorld();
+   notify("Joined battle! Destroy enemy towers!");
   }
-  if(data.type==="state"){
-   players={};
-   (data.players||[]).forEach(p=>players[p.id]=p);
-   me=players[myId]||null;
-   sync();
-   return;
+  if(d.type==="state"){
+   players=d.players||[];
+   minions=d.minions||[];
+   towers=d.towers||[];
+   boss=d.boss||null;
+   const me=players.find(p=>p.id===myId);
+   if(me){
+    gold=me.gold;level=me.level;
+    $("gold").textContent=gold;
+    $("level").textContent=level;
+    $("hpText").textContent=`HP: ${Math.ceil(me.hp)} / ${me.maxHp}`;
+    $("healthbar").style.width=Math.max(0,me.hp/me.maxHp*100)+"%";
+    $("inventory").textContent="Inventory: "+(me.items.join(", ")||"empty");
+   }
+   $("score").innerHTML=`Players: ${players.length}/10<br>Wave: ${d.wave||0}<br>Minions: ${minions.length}<br>Towers: ${towers.filter(t=>t.alive).length}`;
   }
-  if(data.type==="error"){status(data.message);notify(data.message)}
-  if(data.type==="skill")notify("A hero used a skill!");
+  if(d.type==="notice")notify(d.message);
+  if(d.type==="error")notify(d.message);
  };
- ws.onerror=()=>{
-  status("Connection error. Check your Render server.");
-  $("join").disabled=false;
- };
- ws.onclose=()=>{
-  active=false;me=null;myId=null;
-  $("menu").classList.remove("hidden");
-  $("hud").classList.add("hidden");
-  $("join").disabled=false;
-  status("Disconnected. Check your server and try again.");
- };
-}
-$("join").onclick=connect;
+ socket.onerror=()=>{$("status").textContent="Connection error. Check your Render server.";};
+ socket.onclose=()=>{if(gameStarted)notify("Disconnected from server.");};
+};
 
-/* THREE.JS */
-const scene=new THREE.Scene();
-scene.background=new THREE.Color(0x07111c);
-scene.fog=new THREE.Fog(0x07111c,75,150);
-const camera=new THREE.PerspectiveCamera(58,innerWidth/innerHeight,.1,500);
-camera.position.set(0,42,34);
-const renderer=new THREE.WebGLRenderer({antialias:true});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));
-renderer.setSize(innerWidth,innerHeight);
-renderer.shadowMap.enabled=true;
-document.body.prepend(renderer.domElement);
-scene.add(new THREE.HemisphereLight(0xaed8ff,0x122019,2));
-const sun=new THREE.DirectionalLight(0xffffff,2);
-sun.position.set(20,45,15);scene.add(sun);
+document.querySelectorAll("[data-item]").forEach(btn=>{
+ btn.onclick=()=>send({type:"buy",id:btn.dataset.item});
+});
+document.querySelectorAll("[data-skill]").forEach(btn=>{
+ btn.onclick=()=>send({type:"skill",skill:Number(btn.dataset.skill)});
+});
+$("attack").onclick=attackNearest;
+$("spellBtn").onclick=()=>{
+ const me=players.find(p=>p.id===myId);
+ if(!me)return;
+ send({type:"spell",spell,x:me.x+9,z:me.z});
+ notify(spell.toUpperCase()+" activated!");
+};
 
-function mat(c){return new THREE.MeshStandardMaterial({color:c,roughness:.65,metalness:.18})}
-const ground=new THREE.Mesh(new THREE.PlaneGeometry(120,80),mat(0x1b603d));
-ground.rotation.x=-Math.PI/2;scene.add(ground);
-const river=new THREE.Mesh(new THREE.PlaneGeometry(120,9),new THREE.MeshStandardMaterial({color:0x166da0,transparent:true,opacity:.85}));
-river.rotation.x=-Math.PI/2;river.position.y=.04;scene.add(river);
-function road(z){
- const m=new THREE.Mesh(new THREE.PlaneGeometry(110,5),mat(0x65543d));
- m.rotation.x=-Math.PI/2;m.position.set(0,.06,z);scene.add(m);
+function attackNearest(){
+ const me=players.find(p=>p.id===myId);
+ if(!me)return;
+ let targets=[
+  ...players.filter(p=>p.team!==myTeam&&p.alive),
+  ...minions.filter(m=>m.team!==myTeam&&m.alive),
+  ...towers.filter(t=>t.team!==myTeam&&t.alive)
+ ];
+ if(boss&&boss.alive)targets.push(boss);
+ targets.sort((a,b)=>Math.hypot(a.x-me.x,a.z-me.z)-Math.hypot(b.x-me.x,b.z-me.z));
+ if(targets[0])send({type:"attack",target:targets[0].id});
 }
-road(-24);road(0);road(24);
-function tree(x,z){
- const trunk=new THREE.Mesh(new THREE.CylinderGeometry(.55,.8,3,8),mat(0x513522));
- trunk.position.set(x,1.5,z);
- const leaves=new THREE.Mesh(new THREE.SphereGeometry(2.8,12,10),mat(0x164b2b));
- leaves.position.set(x,4,z);scene.add(trunk,leaves);
-}
-for(let i=0;i<45;i++){
- const x=Math.random()*108-54,z=Math.random()*68-34;
- if(Math.abs(z)<7)continue;tree(x,z);
-}
-function createBase(x,color){
- const base=new THREE.Mesh(new THREE.CylinderGeometry(7,9,4,20),mat(color));
- base.position.set(x,2,0);scene.add(base);
- const tower=new THREE.Mesh(new THREE.CylinderGeometry(1.5,2,7,12),mat(color));
- tower.position.set(x,7,0);scene.add(tower);
-}
-createBase(-52,0x2764ff);createBase(52,0xff3348);
 
-/* HERO MODELS */
-function createHero(heroId,team){
- const h=HEROES.find(x=>x.id===heroId)||HEROES[0];
+let renderer,scene,camera,ground,objects=new Map();
+function initializeWorld(){
+ scene=new THREE.Scene();
+ scene.background=new THREE.Color(0x7fc4d7);
+ scene.fog=new THREE.Fog(0x7fc4d7,80,150);
+ camera=new THREE.PerspectiveCamera(55,innerWidth/innerHeight,.1,300);
+ renderer=new THREE.WebGLRenderer({canvas:$("world"),antialias:true});
+ renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+ renderer.setSize(innerWidth,innerHeight);
+ scene.add(new THREE.HemisphereLight(0xc7eeff,0x32402b,1.5));
+ const sun=new THREE.DirectionalLight(0xffffff,1.5);
+ sun.position.set(-30,60,30);scene.add(sun);
+
+ ground=new THREE.Mesh(
+  new THREE.PlaneGeometry(110,80),
+  new THREE.MeshStandardMaterial({color:0x34734c})
+ );
+ ground.rotation.x=-Math.PI/2;ground.position.y=-.2;scene.add(ground);
+
+ // Three lanes
+ [-24,0,24].forEach((z,i)=>{
+  const road=new THREE.Mesh(
+   new THREE.BoxGeometry(95,.15,8),
+   new THREE.MeshStandardMaterial({color:i===1?0x9a967d:0x777b75})
+  );
+  road.position.set(0,.02,z);scene.add(road);
+ });
+
+ // River
+ const river=new THREE.Mesh(
+  new THREE.BoxGeometry(12,.12,80),
+  new THREE.MeshStandardMaterial({color:0x218ebd,roughness:.3})
+ );
+ river.position.set(0,.05,0);scene.add(river);
+
+ // Jungle decorations
+ for(let i=0;i<75;i++){
+  const x=(Math.random()-.5)*85;
+  const z=(Math.random()-.5)*65;
+  if(Math.abs(z)<5||Math.abs(z-24)<5||Math.abs(z+24)<5||Math.abs(x)<7)continue;
+  const trunk=new THREE.Mesh(new THREE.CylinderGeometry(.3,.5,2.5,7),new THREE.MeshStandardMaterial({color:0x60432a}));
+  trunk.position.set(x,1,z);scene.add(trunk);
+  const leaves=new THREE.Mesh(new THREE.SphereGeometry(1.7,8,7),new THREE.MeshStandardMaterial({color:0x145b39}));
+  leaves.position.set(x,3,z);scene.add(leaves);
+ }
+
+ // Bases
+ createBuilding(-43,0,0x227dff,5,5,0x1855a4);
+ createBuilding(43,0,0xff4848,5,5,0x982828);
+ animate();
+}
+
+function createBuilding(x,z,color,sx,sz,roofColor){
+ const base=new THREE.Mesh(new THREE.BoxGeometry(sx,3,sz),new THREE.MeshStandardMaterial({color}));
+ base.position.set(x,1.5,z);scene.add(base);
+ const roof=new THREE.Mesh(new THREE.ConeGeometry(3,3,4),new THREE.MeshStandardMaterial({color:roofColor}));
+ roof.position.set(x,4.5,z);roof.rotation.y=Math.PI/4;scene.add(roof);
+}
+
+function makeCharacter(p){
  const group=new THREE.Group();
- const teamColor=team==="red"?0xff4052:0x4b9cff;
- const body=new THREE.Mesh(new THREE.CylinderGeometry(1.05,1.3,2.5,12),mat(h.color));
- body.position.y=1.8;
- const head=new THREE.Mesh(new THREE.SphereGeometry(.85,16,12),mat(0xffc39a));
- head.position.y=3.55;
- const helmet=new THREE.Mesh(new THREE.TorusGeometry(.8,.13,8,16),mat(0xe8d69c));
- helmet.position.y=4.1;
- const ring=new THREE.Mesh(new THREE.TorusGeometry(1.25,.13,8,20),mat(teamColor));
- ring.rotation.x=Math.PI/2;ring.position.y=2.2;
- const weapon=new THREE.Mesh(new THREE.BoxGeometry(.2,.2,2.5),mat(0xe5eaff));
- weapon.position.set(1.35,2.2,0);weapon.rotation.z=.45;
- const aura=new THREE.Mesh(new THREE.TorusGeometry(1.55,.055,6,24),new THREE.MeshBasicMaterial({color:h.color}));
- aura.rotation.x=Math.PI/2;aura.position.y=.12;
- group.add(body,head,helmet,ring,weapon,aura);
- group.userData.heroId=heroId;
+ const teamColor=p.team==="blue"?0x2a9fff:0xff4545;
+ const body=new THREE.Mesh(new THREE.CylinderGeometry(.65,.85,1.5,8),new THREE.MeshStandardMaterial({color:teamColor}));
+ body.position.y=1.2;group.add(body);
+ const head=new THREE.Mesh(new THREE.SphereGeometry(.48,12,10),new THREE.MeshStandardMaterial({color:0xe4b28c}));
+ head.position.y=2.25;group.add(head);
+ const cape=new THREE.Mesh(new THREE.BoxGeometry(1.1,1.3,.15),new THREE.MeshStandardMaterial({color:0x27354b}));
+ cape.position.set(0,1.3,-.5);group.add(cape);
  return group;
 }
-function sync(){
- for(const id in meshes){
-  if(!players[id]){scene.remove(meshes[id]);delete meshes[id]}
- }
- for(const id in players){
-  const p=players[id];
-  if(!meshes[id]){
-   const heroId=id===myId?selectedHero.id:p.hero;
-   meshes[id]=createHero(heroId,p.team);
-   scene.add(meshes[id]);
-  }
-  meshes[id].position.set(p.x,0,p.z);
- }
- if(!me)return;
- $("stats").textContent=(me.team||"blue").toUpperCase()+" · HP "+me.hp+"/"+me.maxHp+" · LV "+me.level+" · "+me.gold+"G · "+Object.keys(players).length+"/10";
- $("players").innerHTML=Object.values(players).map(p=>(p.team==="blue"?"🔵 ":"🔴 ")+escapeHTML(p.name)+" · "+p.hp+" HP").join("<br>");
- renderInventory();
+function makeUnit(color,radius,height){
+ const g=new THREE.Group();
+ const mesh=new THREE.Mesh(new THREE.CylinderGeometry(radius,radius,height,8),new THREE.MeshStandardMaterial({color}));
+ mesh.position.y=height/2;g.add(mesh);
+ const head=new THREE.Mesh(new THREE.SphereGeometry(radius*.65,8,8),new THREE.MeshStandardMaterial({color:0xffd29e}));
+ head.position.y=height+radius*.5;g.add(head);
+ return g;
 }
-function renderInventory(){
- if(!me)return;
- const inv=$("inventory");inv.innerHTML="";
- (me.items||[]).forEach((item,index)=>{
-  const slot=document.createElement("button");slot.className="slot";
-  slot.innerHTML=escapeHTML(item.name)+"<br><span style='color:#ffd166'>SELL</span>";
-  slot.onclick=()=>{if(confirm("Sell "+item.name+"?"))send({type:"sell",index:index})};
-  inv.appendChild(slot);
+function syncObject(id,create,x,z,color,type){
+ let o=objects.get(id);
+ if(!o){o=create();scene.add(o);objects.set(id,o);}
+ o.position.set(x,0,z);
+ return o;
+}
+function updateWorld(){
+ if(!scene)return;
+ const liveIds=new Set();
+
+ players.forEach(p=>{
+  liveIds.add(p.id);
+  let o=syncObject(p.id,()=>makeCharacter(p),p.x,p.z);
+  o.visible=p.alive;
+  o.position.set(p.x,0,p.z);
+  o.rotation.y=p.team==="blue"?Math.PI/2:-Math.PI/2;
  });
+ minions.forEach(m=>{
+  liveIds.add(m.id);
+  let o=syncObject(m.id,()=>makeUnit(m.team==="blue"?0x55aaff:0xff7777,.38,1),m.x,m.z);
+  o.visible=m.alive;
+ });
+ towers.forEach(t=>{
+  liveIds.add(t.id);
+  let o=syncObject(t.id,()=>makeUnit(t.team==="blue"?0x328aff:0xff5555,1.1,4),t.x,t.z);
+  o.visible=t.alive;
+ });
+ if(boss){
+  liveIds.add(boss.id);
+  let o=syncObject(boss.id,()=>makeUnit(0x9b48d4,2,4),boss.x,boss.z);
+  o.visible=boss.alive;
+ }
+ for(const [id,o] of objects){
+  if(!liveIds.has(id)){scene.remove(o);objects.delete(id);}
+ }
 }
-
-/* SHOP */
-document.querySelectorAll(".item").forEach(el=>{
- el.onclick=()=>{
-  if(!me){notify("Enter the arena first!");return}
-  send({type:"buy",id:el.dataset.id,name:el.dataset.name,price:Number(el.dataset.price),damage:Number(el.dataset.damage||0),defense:Number(el.dataset.defense||0),speed:Number(el.dataset.speed||0),power:Number(el.dataset.power||0)});
- };
+let lastMove=0;
+const keys={};
+window.addEventListener("keydown",e=>{
+ keys[e.key.toLowerCase()]=true;
+ if(e.key.toLowerCase()==="j")attackNearest();
+ if(["1","2","3"].includes(e.key))send({type:"skill",skill:Number(e.key)});
+ if(e.key.toLowerCase()==="4")$("spellBtn").click();
 });
-$("shopToggle").onclick=()=>$("shop").classList.toggle("open");
+window.addEventListener("keyup",e=>keys[e.key.toLowerCase()]=false);
 
-/* ATTACK AND SKILLS */
-function attack(){
- if(!me)return;
- let target=null,nearest=Infinity;
- for(const id in players){
-  const p=players[id];
-  if(p.team===me.team||p.hp<=0)continue;
-  const d=Math.hypot(p.x-me.x,p.z-me.z);
-  if(d<nearest){nearest=d;target=id}
+let joy={x:0,z:0};
+const stick=$("stick"),knob=$("knob");
+stick.addEventListener("pointerdown",e=>{stick.setPointerCapture(e.pointerId);moveJoy(e);});
+stick.addEventListener("pointermove",e=>{if(e.buttons)moveJoy(e);});
+stick.addEventListener("pointerup",resetJoy);
+stick.addEventListener("pointercancel",resetJoy);
+function moveJoy(e){
+ const r=stick.getBoundingClientRect();
+ let x=e.clientX-(r.left+r.width/2),y=e.clientY-(r.top+r.height/2);
+ const len=Math.hypot(x,y),max=35;
+ if(len>max){x=x/len*max;y=y/len*max;}
+ joy.x=x/max;joy.z=y/max;
+ knob.style.transform=`translate(${x}px,${y}px)`;
+}
+function resetJoy(){joy={x:0,z:0};knob.style.transform="translate(0,0)";}
+
+function animate(){
+ requestAnimationFrame(animate);
+ if(!scene)return;
+ const me=players.find(p=>p.id===myId);
+ if(me&&me.alive){
+  let dx=joy.x+(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0);
+  let dz=joy.z+(keys.s||keys.arrowdown?1:0)-(keys.w||keys.arrowup?1:0);
+  const len=Math.hypot(dx,dz);
+  if(len>0){
+   dx/=Math.max(1,len);dz/=Math.max(1,len);
+   const now=performance.now();
+   if(now-lastMove>70){
+    send({type:"move",x:me.x+dx*.8,z:me.z+dz*.8});
+    lastMove=now;
+   }
+  }
+  camera.position.lerp(new THREE.Vector3(me.x+18,25,me.z+23),.08);
+  camera.lookAt(me.x,0,me.z);
  }
- if(!target||nearest>7){notify("No enemy in attack range!");return}
- send({type:"attack",target});
-}
-$("attack").onclick=attack;
-function useSkill(skill){
- if(!me)return;
- send({type:"skill",skill:skill,hero:selectedHero.id});
- notify(selectedHero.skills[skill-1]||"Ultimate activated!");
-}
-$("s1").onclick=()=>useSkill(1);
-$("s2").onclick=()=>useSkill(2);
-$("ult").onclick=()=>useSkill(3);
-
-/* KEYBOARD */
-addEventListener("keydown",e=>{
- const k=e.key.toLowerCase();keys[k]=true;
- if(["w","a","s","d"," "].includes(k))e.preventDefault();
- if(k==="j")attack();if(k==="1")useSkill(1);if(k==="2")useSkill(2);if(k==="3")useSkill(3);
-});
-addEventListener("keyup",e=>keys[e.key.toLowerCase()]=false);
-
-/* MOBILE JOYSTICK */
-let dragging=false;
-const joystick=$("joystick"),stick=$("stick");
-function joystickMove(e){
- const r=joystick.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
- let x=(e.clientX-cx)/43,y=(e.clientY-cy)/43,len=Math.hypot(x,y);
- if(len>1){x/=len;y/=len}
- joy={x,y};stick.style.transform=`translate(${x*35}px,${y*35}px)`;
-}
-joystick.addEventListener("pointerdown",e=>{dragging=true;joystick.setPointerCapture(e.pointerId);joystickMove(e)});
-joystick.addEventListener("pointermove",e=>{if(dragging)joystickMove(e)});
-function resetJoy(){dragging=false;joy={x:0,y:0};stick.style.transform=""}
-joystick.addEventListener("pointerup",resetJoy);
-joystick.addEventListener("pointercancel",resetJoy);
-
-/* MOVEMENT */
-function move(){
- if(!me||!active)return;
- let x=(keys.d?1:0)-(keys.a?1:0)+joy.x;
- let z=(keys.s?1:0)-(keys.w?1:0)+joy.y;
- if(!x&&!z)return;
- const len=Math.hypot(x,z);x/=len;z/=len;
- const bonus=(me.items||[]).reduce((s,i)=>s+(i.speed||0),0);
- const speed=.22+bonus*.003;
- me.x=Math.max(-55,Math.min(55,me.x+x*speed));
- me.z=Math.max(-35,Math.min(35,me.z+z*speed));
- if(Date.now()-lastMove>60){
-  lastMove=Date.now();send({type:"move",x:me.x,z:me.z});
- }
-}
-$("leave").onclick=()=>{if(ws)ws.close()};
-
-/* GAME LOOP */
-function loop(){
- requestAnimationFrame(loop);move();
- if(me&&meshes[myId]){
-  const hero=meshes[myId];
-  camera.position.x+=(hero.position.x-camera.position.x)*.08;
-  camera.position.z+=(hero.position.z+32-camera.position.z)*.08;
-  camera.lookAt(hero.position.x,0,hero.position.z);
- }
+ updateWorld();
  renderer.render(scene,camera);
 }
-loop();
-addEventListener("resize",()=>{
- camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
+window.addEventListener("resize",()=>{
+ if(!renderer||!camera)return;
+ camera.aspect=innerWidth/innerHeight;
+ camera.updateProjectionMatrix();
  renderer.setSize(innerWidth,innerHeight);
 });
 </script>
