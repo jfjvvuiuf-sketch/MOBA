@@ -1,5 +1,6 @@
+
 {
-  "name": "vyra-legends-arena",
+  "name": "vyra-arena",
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
